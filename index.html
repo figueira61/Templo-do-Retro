@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcade Retro - Coleção de Jogos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #0d0f18;
+            color: #ffffff;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .neon-border {
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+        }
+        .neon-border:hover {
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.8);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
+
+    <!-- Cabeçalho -->
+    <header class="text-center mb-10">
+        <h1 class="text-4xl md:text-6xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 mb-2">
+            🕹️️ ARCADE RETRO
+        </h1>
+        <p class="text-gray-400 text-sm md:text-base">Escolha um jogo para começar a jogar no browser</p>
+    </header>
+
+    <!-- Grelha de Jogos -->
+    <main class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl w-full">
+
+        <!-- Cartão / Botão: Jogo da Cobra -->
+        <a href="https://o-seu-utilizador.github.io/snake-game/" 
+           class="neon-border bg-gray-900 border-2 border-pink-500/50 hover:border-pink-500 rounded-2xl p-6 transition-all transform hover:-translate-y-1 flex flex-col items-center text-center group">
+            <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">🐍</div>
+            <h2 class="text-xl font-bold text-pink-400 mb-2">Jogo da Cobra</h2>
+            <p class="text-gray-400 text-xs mb-4">Coma as maçãs, evite as paredes e use os portais misticos.</p>
+            <span class="mt-auto inline-block bg-pink-600 group-hover:bg-pink-500 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider">
+                Jogar Agora
+            </span>
+        </a>
+
+        <!-- Cartão / Botão: Jogo 2 (Exemplo) -->
+        <a href="https://o-seu-utilizador.github.io/outro-jogo/" 
+           class="neon-border bg-gray-900 border-2 border-cyan-500/50 hover:border-cyan-500 rounded-2xl p-6 transition-all transform hover:-translate-y-1 flex flex-col items-center text-center group">
+            <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">👾</div>
+            <h2 class="text-xl font-bold text-cyan-400 mb-2">Space Invaders</h2>
+            <p class="text-gray-400 text-xs mb-4">Defenda a galáxia das ondas de naves inimigas.</p>
+            <span class="mt-auto inline-block bg-cyan-600 group-hover:bg-cyan-500 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider">
+                Em Breve
+            </span>
+        </a>
+
+        <!-- Cartão / Botão: Jogo 3 (Exemplo) -->
+        <a href="https://o-seu-utilizador.github.io/tetris-retro/" 
+           class="neon-border bg-gray-900 border-2 border-purple-500/50 hover:border-purple-500 rounded-2xl p-6 transition-all transform hover:-translate-y-1 flex flex-col items-center text-center group">
+            <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">🧩</div>
+            <h2 class="text-xl font-bold text-purple-400 mb-2">Tetris</h2>
+            <p class="text-gray-400 text-xs mb-4">Encaixe as peças e complete linhas sem acumular até ao topo.</p>
+            <span class="mt-auto inline-block bg-purple-600 group-hover:bg-purple-500 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider">
+                Em Breve
+            </span>
+        </a>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="mt-12 text-gray-500 text-xs">
+        Desenvolvido com HTML5 & GitHub Pages
+    </footer>
+
+</body>
+</html>

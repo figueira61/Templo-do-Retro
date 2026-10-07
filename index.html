@@ -52,6 +52,24 @@
                 linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
         }
+
+        /* ===== Login obrigatório ===== */
+        .rt-sobre { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(8, 9, 16, 0.94); backdrop-filter: blur(6px); }
+        .rt-sobre[hidden] { display: none; }
+        .rt-caixa { width: 100%; max-width: 380px; border-radius: 18px; padding: 22px; text-align: center; background: rgba(17, 20, 34, 0.97); border: 2px solid rgba(236, 72, 153, 0.55); box-shadow: 0 0 30px rgba(236, 72, 153, 0.3); }
+        .rt-caixa h2 { font-family: 'Press Start 2P', cursive; font-size: 15px; line-height: 1.5; margin: 0 0 8px; color: #f472b6; text-shadow: 0 0 10px rgba(236,72,153,.7); }
+        .rt-sub { font-size: 15px; color: #9ca3af; margin: 0 0 14px; font-weight: 500; }
+        .rt-caixa input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,.2); background: rgba(0,0,0,.45); color: #fff; font-size: 17px; font-family: 'Rajdhani', sans-serif; font-weight: 700; text-align: center; outline: none; }
+        .rt-caixa input:focus { border-color: #22d3ee; box-shadow: 0 0 0 2px rgba(34,211,238,.3); }
+        .rt-abas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+        .rt-aba, .rt-btn { font-family: 'Rajdhani', sans-serif; font-weight: 900; font-size: 15px; letter-spacing: .06em; border-radius: 10px; padding: 10px; border: 1px solid rgba(255,255,255,.2); background: rgba(31,41,55,.8); color: #d1d5db; cursor: pointer; }
+        .rt-aba.on { border-color: #22d3ee; background: rgba(34,211,238,.18); color: #22d3ee; }
+        .rt-btn.principal { width: 100%; padding: 13px; font-size: 17px; border: 0; color: #fff; background: linear-gradient(90deg, #db2777, #7c3aed); }
+        .rt-btn:disabled { opacity: .55; }
+        .rt-erro { min-height: 20px; margin: 0 0 8px; font-size: 15px; font-weight: 700; color: #f87171; }
+        .rt-chip { display: inline-flex; align-items: center; gap: 10px; margin-top: 14px; padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(34,211,238,.45); background: rgba(34,211,238,.08); font-size: 16px; font-weight: 700; color: #67e8f9; }
+        .rt-chip button { background: none; border: 0; color: #f472b6; text-decoration: underline; font: inherit; font-size: 14px; cursor: pointer; }
+        .rt-stats { margin-top: 12px; font-size: 14px; color: #9ca3af; font-weight: 500; }
     </style>
 </head>
 <body class="bg-grid flex flex-col items-center justify-between p-4 md:p-8">
@@ -67,6 +85,8 @@
         <p class="text-gray-400 text-base sm:text-lg max-w-md mx-auto font-medium">
             Escolha um jogo abaixo para jogar diretamente no seu navegador mobile ou desktop.
         </p>
+        <div id="rt-chip" class="rt-chip" hidden>🎮 <span id="rt-nome-chip"></span> <button type="button" id="rt-sair">Sair</button></div>
+        <p id="rt-stats" class="rt-stats"></p>
     </header>
 
     <!-- Grelha de Jogos -->
@@ -135,5 +155,197 @@
         <p class="text-gray-600">Otimizado para iOS, Android e Desktop</p>
     </footer>
 
+
+    <!-- Login obrigatório (nome + PIN) -->
+    <div id="rt-login" class="rt-sobre" hidden>
+        <form id="rt-form" class="rt-caixa" autocomplete="off">
+            <h2>🕹 ARCADE RETRO</h2>
+            <p class="rt-sub">Escolhe o teu nome de jogador (único) e um PIN de 4 a 6 dígitos para entrares no Templo.</p>
+            <div class="rt-abas">
+                <button type="button" class="rt-aba on" id="rt-aba-entrar">ENTRAR</button>
+                <button type="button" class="rt-aba" id="rt-aba-criar">CRIAR JOGADOR</button>
+            </div>
+            <input id="rt-nome" type="text" maxlength="16" placeholder="Nome de jogador" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Nome de jogador">
+            <input id="rt-pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="PIN (4 a 6 dígitos)" aria-label="PIN">
+            <div id="rt-erro" class="rt-erro" role="alert"></div>
+            <button type="submit" id="rt-ok" class="rt-btn principal">ENTRAR</button>
+        </form>
+    </div>
+
+    <script>
+/* ===== RETRO: cliente do Templo do Retro (Supabase) — partilhado pelos 3 sites ===== */
+var RETRO = (function () {
+  var URL = "https://gzehglkrrpwahuzkqjxa.supabase.co";
+  var KEY = "sb_publishable_9EI749gU417uUY9bPCTvzA_gmFEwAwm";
+  var CHAVE = "retro.sessao";
+  var sessao = null;
+
+  function rpc(fn, corpo) {
+    var ctl = typeof AbortController !== "undefined" ? new AbortController() : null;
+    var t = ctl ? setTimeout(function () { ctl.abort(); }, 10000) : null;
+    return fetch(URL + "/rest/v1/rpc/" + fn, {
+      method: "POST",
+      headers: { "apikey": KEY, "Content-Type": "application/json" },
+      body: JSON.stringify(corpo || {}),
+      signal: ctl ? ctl.signal : undefined
+    }).then(function (r) {
+      if (t) clearTimeout(t);
+      if (!r.ok) throw new Error("http_" + r.status);
+      return r.json();
+    }, function (e) {
+      if (t) clearTimeout(t);
+      throw new Error("rede");
+    });
+  }
+
+  function lerSessao() {
+    try {
+      var s = JSON.parse(localStorage.getItem(CHAVE) || "null");
+      if (s && s.username && s.token) { sessao = s; return s; }
+    } catch (e) {}
+    sessao = null; return null;
+  }
+  function guardarSessao(username, token) {
+    sessao = { username: username, token: token };
+    try { localStorage.setItem(CHAVE, JSON.stringify(sessao)); } catch (e) {}
+  }
+  function limparSessao() {
+    sessao = null;
+    try { localStorage.removeItem(CHAVE); } catch (e) {}
+  }
+
+  function trata(p) {
+    return p.then(function (r) {
+      if (r && r.ok && r.token) guardarSessao(r.username, r.token);
+      return r;
+    });
+  }
+  function entrar(nome, pin) { return trata(rpc("login_player", { p_username: nome, p_pin: pin })); }
+  function criar(nome, pin) { return trata(rpc("register_player", { p_username: nome, p_pin: pin })); }
+
+  // Valida a sessão guardada. Devolve {ok:true,username} | {ok:false} (sessão inválida).
+  // Se não houver rede, rejeita (quem chama decide continuar com a sessão local).
+  function validar() {
+    var s = lerSessao();
+    if (!s) return Promise.resolve({ ok: false, error: "sem_sessao" });
+    return rpc("check_session", { p_token: s.token }).then(function (r) {
+      if (!r || !r.ok) limparSessao();
+      return r;
+    });
+  }
+  function sair() {
+    var s = sessao || lerSessao();
+    limparSessao();
+    if (!s) return Promise.resolve();
+    return rpc("logout_player", { p_token: s.token }).catch(function () {});
+  }
+  function enviar(jogo, dados) {
+    var s = sessao || lerSessao();
+    if (!s) return Promise.resolve({ ok: false, error: "invalid_session" });
+    return rpc("submit_result", {
+      p_token: s.token, p_game: jogo,
+      p_score: dados && dados.score != null ? dados.score : null,
+      p_result: dados && dados.result ? dados.result : null
+    }).then(function (r) {
+      if (r && !r.ok && r.error === "invalid_session") limparSessao();
+      return r;
+    });
+  }
+  function ranking(jogo) { return rpc("get_leaderboard", { p_game: jogo, p_limit: 500 }); }
+  function minhasStats() {
+    var s = sessao || lerSessao();
+    if (!s) return Promise.resolve({ ok: false, error: "invalid_session" });
+    return rpc("get_my_stats", { p_token: s.token });
+  }
+
+  function mensagemErro(r) {
+    var e = r && r.error;
+    if (e === "invalid_name") return "Nome inválido: 2 a 16 caracteres (letras, números, espaço . _ -).";
+    if (e === "invalid_pin") return "PIN inválido: usa 4 a 6 dígitos.";
+    if (e === "name_taken") return "Esse nome já está em uso. Escolhe outro.";
+    if (e === "wrong_credentials") return "Nome ou PIN errado.";
+    if (e === "locked") {
+      var m = Math.max(1, Math.ceil((r.retry_in || 60) / 60));
+      return "Conta bloqueada por PINs errados. Tenta daqui a " + m + " min.";
+    }
+    if (e === "full") return "O Templo está cheio de jogadores.";
+    if (e === "invalid_session") return "A sessão expirou. Entra de novo.";
+    return "Erro inesperado. Tenta de novo.";
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  return {
+    rpc: rpc, sessao: function () { return sessao || lerSessao(); },
+    entrar: entrar, criar: criar, validar: validar, sair: sair,
+    enviar: enviar, ranking: ranking, minhasStats: minhasStats,
+    mensagemErro: mensagemErro, esc: esc,
+    redeErro: function (e) { return !!e && (e.message === "rede" || /^http_/.test(e.message)); }
+  };
+})();
+
+    (function () {
+        var login = document.getElementById('rt-login'), nome = document.getElementById('rt-nome'),
+            pin = document.getElementById('rt-pin'), erro = document.getElementById('rt-erro'),
+            ok = document.getElementById('rt-ok'), chip = document.getElementById('rt-chip'),
+            modo = 'entrar';
+
+        function stats() {
+            var el = document.getElementById('rt-stats'); el.textContent = '';
+            RETRO.minhasStats().then(function (r) {
+                if (!r || !r.ok) return;
+                var s = r.stats || {}, sn = s.snake, fo = s.forca, t = [];
+                if (sn && sn.games) t.push('🐍 Recorde: ' + sn.best_score);
+                if (fo && fo.games) t.push('🔤 Forca: ' + fo.wins + 'V / ' + fo.losses + 'D');
+                el.textContent = t.join('   ·   ');
+            }).catch(function () {});
+        }
+        function mostra() {
+            var s = RETRO.sessao();
+            if (s) {
+                login.hidden = true; chip.hidden = false;
+                document.getElementById('rt-nome-chip').textContent = s.username;
+                stats();
+            } else {
+                chip.hidden = true; document.getElementById('rt-stats').textContent = '';
+                erro.textContent = ''; pin.value = ''; login.hidden = false;
+                setTimeout(function () { nome.focus(); }, 50);
+            }
+        }
+        function setModo(m) {
+            modo = m;
+            document.getElementById('rt-aba-entrar').classList.toggle('on', m === 'entrar');
+            document.getElementById('rt-aba-criar').classList.toggle('on', m === 'criar');
+            ok.textContent = m === 'entrar' ? 'ENTRAR' : 'CRIAR E ENTRAR';
+            erro.textContent = '';
+        }
+        document.getElementById('rt-aba-entrar').addEventListener('click', function () { setModo('entrar'); });
+        document.getElementById('rt-aba-criar').addEventListener('click', function () { setModo('criar'); });
+        document.getElementById('rt-form').addEventListener('submit', function (ev) {
+            ev.preventDefault();
+            var n = nome.value.trim(), p = pin.value.trim();
+            if (n.length < 2) { erro.textContent = 'Escreve o teu nome de jogador.'; return; }
+            if (!/^[0-9]{4,6}$/.test(p)) { erro.textContent = 'O PIN tem de ter 4 a 6 dígitos.'; return; }
+            erro.textContent = ''; ok.disabled = true;
+            (modo === 'entrar' ? RETRO.entrar(n, p) : RETRO.criar(n, p)).then(function (r) {
+                ok.disabled = false;
+                if (r && r.ok) mostra(); else erro.textContent = RETRO.mensagemErro(r);
+            }, function () {
+                ok.disabled = false;
+                erro.textContent = 'Sem ligação ao servidor. Tenta de novo daqui a pouco.';
+            });
+        });
+        document.getElementById('rt-sair').addEventListener('click', function () { RETRO.sair(); mostra(); });
+
+        // Arranque: com sessão guardada confirma-a; sem rede mantém-na.
+        if (RETRO.sessao()) {
+            mostra();
+            RETRO.validar().then(function (r) { if (!r || !r.ok) mostra(); }, function () {});
+        } else { mostra(); }
+    })();
+    </script>
 </body>
 </html>

@@ -39,8 +39,8 @@ create index if not exists sessions_player_idx on public.sessions (player_id);
 
 create table if not exists public.game_stats (
   player_id   bigint      not null references public.players (id) on delete cascade,
-  game        text        not null check (game in ('snake', 'forca')),
-  best_score  int         not null default 0,  -- snake: recorde
+  game        text        not null check (game in ('snake', 'forca', 'pacman', 'dino')),
+  best_score  int         not null default 0,  -- snake / pacman / dino: recorde
   games       int         not null default 0,  -- jogos terminados
   wins        int         not null default 0,  -- forca
   losses      int         not null default 0,  -- forca
@@ -49,6 +49,11 @@ create table if not exists public.game_stats (
   updated_at  timestamptz not null default now(),
   primary key (player_id, game)
 );
+
+-- Bases já existentes: atualiza a lista de jogos permitidos (pode correr várias vezes).
+alter table public.game_stats drop constraint if exists game_stats_game_check;
+alter table public.game_stats add constraint game_stats_game_check
+  check (game in ('snake', 'forca', 'pacman', 'dino'));
 
 -- Tabelas fechadas: ninguém lê nem escreve diretamente a partir do navegador.
 alter table public.players    enable row level security;
@@ -233,7 +238,7 @@ end;
 $$;
 
 -- Registar o resultado de um jogo.
---   snake: p_score = pontos da partida (guarda o melhor)
+--   snake / pacman / dino: p_score = pontos da partida (guarda o melhor)
 --   forca: p_result = 'win' ou 'loss'
 create or replace function public.submit_result(
   p_token text, p_game text, p_score int default null, p_result text default null)
@@ -249,10 +254,14 @@ begin
   if v_pid is null then
     return jsonb_build_object('ok', false, 'error', 'invalid_session');
   end if;
-  if p_game not in ('snake', 'forca') then
+  if p_game not in ('snake', 'forca', 'pacman', 'dino') then
     return jsonb_build_object('ok', false, 'error', 'invalid_game');
   end if;
-  if p_game = 'snake' and (p_score is null or p_score < 0 or p_score > 10000) then
+  if p_game in ('snake', 'pacman', 'dino')
+     and (p_score is null or p_score < 0
+          or p_score > case p_game when 'snake' then 10000
+                                   when 'pacman' then 500000
+                                   else 100000 end) then
     return jsonb_build_object('ok', false, 'error', 'invalid_score');
   end if;
   if p_game = 'forca' and (p_result is null or p_result not in ('win', 'loss')) then
@@ -272,7 +281,7 @@ begin
     return jsonb_build_object('ok', false, 'error', 'too_fast');
   end if;
 
-  if p_game = 'snake' then
+  if p_game in ('snake', 'pacman', 'dino') then
     update public.game_stats
        set best_score = greatest(best_score, p_score),
            games      = games + 1,
@@ -340,7 +349,7 @@ as $$
 declare
   v_out jsonb;
 begin
-  if p_game not in ('snake', 'forca') then
+  if p_game not in ('snake', 'forca', 'pacman', 'dino') then
     return '[]'::jsonb;
   end if;
   select coalesce(jsonb_agg(to_jsonb(t)), '[]'::jsonb) into v_out
@@ -355,7 +364,7 @@ begin
         from public.players p
         left join public.game_stats s
                on s.player_id = p.id and s.game = p_game
-       order by case when p_game = 'snake' then coalesce(s.best_score, 0)
+       order by case when p_game <> 'forca' then coalesce(s.best_score, 0)
                      else coalesce(s.wins, 0) end desc,
                 p.created_at asc
        limit least(greatest(coalesce(p_limit, 500), 1), 500)

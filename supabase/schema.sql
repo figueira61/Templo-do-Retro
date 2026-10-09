@@ -39,8 +39,8 @@ create index if not exists sessions_player_idx on public.sessions (player_id);
 
 create table if not exists public.game_stats (
   player_id   bigint      not null references public.players (id) on delete cascade,
-  game        text        not null check (game in ('snake', 'forca', 'pacman', 'dino')),
-  best_score  int         not null default 0,  -- snake / pacman / dino: recorde
+  game        text        not null check (game in ('snake', 'forca', 'pacman', 'dino', 'tetris')),
+  best_score  int         not null default 0,  -- snake / pacman / dino / tetris: recorde
   games       int         not null default 0,  -- jogos terminados
   wins        int         not null default 0,  -- forca
   losses      int         not null default 0,  -- forca
@@ -53,7 +53,7 @@ create table if not exists public.game_stats (
 -- Bases já existentes: atualiza a lista de jogos permitidos (pode correr várias vezes).
 alter table public.game_stats drop constraint if exists game_stats_game_check;
 alter table public.game_stats add constraint game_stats_game_check
-  check (game in ('snake', 'forca', 'pacman', 'dino'));
+  check (game in ('snake', 'forca', 'pacman', 'dino', 'tetris'));
 
 -- Tabelas fechadas: ninguém lê nem escreve diretamente a partir do navegador.
 alter table public.players    enable row level security;
@@ -238,7 +238,7 @@ end;
 $$;
 
 -- Registar o resultado de um jogo.
---   snake / pacman / dino: p_score = pontos da partida (guarda o melhor)
+--   snake / pacman / dino / tetris: p_score = pontos da partida (guarda o melhor)
 --   forca: p_result = 'win' ou 'loss'
 create or replace function public.submit_result(
   p_token text, p_game text, p_score int default null, p_result text default null)
@@ -254,13 +254,14 @@ begin
   if v_pid is null then
     return jsonb_build_object('ok', false, 'error', 'invalid_session');
   end if;
-  if p_game not in ('snake', 'forca', 'pacman', 'dino') then
+  if p_game not in ('snake', 'forca', 'pacman', 'dino', 'tetris') then
     return jsonb_build_object('ok', false, 'error', 'invalid_game');
   end if;
-  if p_game in ('snake', 'pacman', 'dino')
+  if p_game in ('snake', 'pacman', 'dino', 'tetris')
      and (p_score is null or p_score < 0
           or p_score > case p_game when 'snake' then 10000
                                    when 'pacman' then 500000
+                                   when 'tetris' then 1000000
                                    else 100000 end) then
     return jsonb_build_object('ok', false, 'error', 'invalid_score');
   end if;
@@ -281,7 +282,7 @@ begin
     return jsonb_build_object('ok', false, 'error', 'too_fast');
   end if;
 
-  if p_game in ('snake', 'pacman', 'dino') then
+  if p_game in ('snake', 'pacman', 'dino', 'tetris') then
     update public.game_stats
        set best_score = greatest(best_score, p_score),
            games      = games + 1,
@@ -349,7 +350,7 @@ as $$
 declare
   v_out jsonb;
 begin
-  if p_game not in ('snake', 'forca', 'pacman', 'dino') then
+  if p_game not in ('snake', 'forca', 'pacman', 'dino', 'tetris') then
     return '[]'::jsonb;
   end if;
   select coalesce(jsonb_agg(to_jsonb(t)), '[]'::jsonb) into v_out

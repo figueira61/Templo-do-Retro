@@ -372,11 +372,12 @@ var RETRO = (function () {
             var el = document.getElementById('rt-stats'); el.textContent = '';
             RETRO.minhasStats().then(function (r) {
                 if (!r || !r.ok) return;
-                var s = r.stats || {}, sn = s.snake, fo = s.forca, pm = s.pacman, di = s.dino, t = [];
+                var s = r.stats || {}, sn = s.snake, fo = s.forca, pm = s.pacman, di = s.dino, te = s.tetris, t = [];
                 if (sn && sn.games) t.push('🐍 Recorde: ' + sn.best_score);
                 if (fo && fo.games) t.push('🔤 Forca: ' + fo.wins + 'V / ' + fo.losses + 'D');
                 if (pm && pm.games) t.push('🟡 Pac-Man: ' + pm.best_score);
                 if (di && di.games) t.push('🦖 Dino: ' + di.best_score);
+                if (te && te.games) t.push('🧱 Tetris: ' + te.best_score);
                 el.textContent = t.join('   ·   ');
             }).catch(function () {});
         }

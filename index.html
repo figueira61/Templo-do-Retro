@@ -62,6 +62,13 @@
             box-shadow: 0 0 25px rgba(249, 115, 22, 0.6);
         }
 
+        .neon-card-red {
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);
+        }
+        .neon-card-red:hover {
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.6);
+        }
+
         .neon-card-purple {
             box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
         }
@@ -223,7 +230,70 @@
             </span>
         </a>
 
-        <!-- Cartão 6: Em Breve (Exemplo: Jogo do Galo / Tic Tac Toe) -->
+        <!-- Cartão 6: CR7 vs JJ (O Banco & O Mister) -->
+        <a href="https://figueira61.github.io/cr7/"
+           class="neon-card-red bg-gray-900/90 border-2 border-red-500/50 hover:border-red-500 rounded-2xl p-6 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col items-center text-center group backdrop-blur-sm">
+            <div class="mb-4 group-hover:scale-110 transition-transform duration-300 filter drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">
+                <!-- Bonecos CR7 (camisola 7) e Mister (fato e gravata), desenho próprio -->
+                <svg viewBox="0 0 122 70" width="122" height="70" class="mx-auto block" role="img" aria-label="Bonecos do CR7 e do Mister">
+                    <!-- CR7 -->
+                    <g>
+                        <rect x="27" y="54" width="5" height="11" fill="#e0ac82"/>
+                        <rect x="36" y="54" width="5" height="11" fill="#e0ac82"/>
+                        <rect x="26" y="64" width="7" height="4" rx="1.5" fill="#111"/>
+                        <rect x="35" y="64" width="7" height="4" rx="1.5" fill="#111"/>
+                        <rect x="26" y="46" width="16" height="9" rx="2" fill="#0b6b3a"/>
+                        <g stroke="#c8102e" stroke-width="6" stroke-linecap="round">
+                            <line x1="25" y1="31" x2="17" y2="44"/>
+                            <line x1="43" y1="31" x2="51" y2="44"/>
+                        </g>
+                        <circle cx="17" cy="45.5" r="3" fill="#e0ac82"/>
+                        <circle cx="51" cy="45.5" r="3" fill="#e0ac82"/>
+                        <rect x="24" y="27" width="20" height="21" rx="5" fill="#c8102e"/>
+                        <text x="34" y="43" text-anchor="middle" font-size="13" font-weight="900" font-family="Rajdhani, Arial, sans-serif" fill="#ffffff">7</text>
+                        <circle cx="34" cy="17" r="9" fill="#e0ac82"/>
+                        <path d="M25 16a9 9 0 0 1 18 0c-3-3-6-4-9-4s-6 1-9 4z" fill="#1c1410"/>
+                        <ellipse cx="36" cy="8.5" rx="8" ry="4" fill="#1c1410"/>
+                        <circle cx="30.5" cy="18" r="1.3" fill="#111"/>
+                        <circle cx="37.5" cy="18" r="1.3" fill="#111"/>
+                        <path d="M30.5 22.2q3.5 2.8 7 0" fill="none" stroke="#4a2a20" stroke-width="1.3" stroke-linecap="round"/>
+                    </g>
+                    <!-- VS -->
+                    <text x="61" y="42" text-anchor="middle" font-size="9" font-family="'Press Start 2P', monospace" fill="#fbbf24">VS</text>
+                    <!-- Mister -->
+                    <g>
+                        <rect x="80" y="46" width="7" height="19" fill="#1c2a44"/>
+                        <rect x="89" y="46" width="7" height="19" fill="#1c2a44"/>
+                        <rect x="79" y="64" width="9" height="4" rx="1.5" fill="#111"/>
+                        <rect x="88" y="64" width="9" height="4" rx="1.5" fill="#111"/>
+                        <g stroke="#1c2a44" stroke-width="6" stroke-linecap="round">
+                            <line x1="78" y1="31" x2="70" y2="44"/>
+                            <line x1="98" y1="31" x2="106" y2="44"/>
+                        </g>
+                        <circle cx="70" cy="45.5" r="3" fill="#dbb08f"/>
+                        <circle cx="106" cy="45.5" r="3" fill="#dbb08f"/>
+                        <rect x="77" y="27" width="22" height="22" rx="4" fill="#1c2a44"/>
+                        <path d="M83 27h10l-5 11z" fill="#e9e9e9"/>
+                        <path d="M87 28h2l1.2 9-2.2 3-2.2-3z" fill="#c8102e"/>
+                        <circle cx="88" cy="17" r="9" fill="#dbb08f"/>
+                        <path d="M79 15.5a9 9 0 0 1 18 0c-3-2-6-3.2-9-3.2s-6 1.2-9 3.2z" fill="#aeb3b8"/>
+                        <circle cx="84.5" cy="18" r="1.3" fill="#111"/>
+                        <circle cx="91.5" cy="18" r="1.3" fill="#111"/>
+                        <path d="M82.5 14.8l4 1.4M93.5 14.8l-4 1.4" stroke="#7b8087" stroke-width="1.1" stroke-linecap="round"/>
+                        <path d="M85 22.8h6" stroke="#4a2a20" stroke-width="1.3" stroke-linecap="round"/>
+                    </g>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-red-400 mb-6 tracking-wide group-hover:text-red-300">
+                CR7 vs JJ
+            </h2>
+            <span class="mt-auto inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-500 group-hover:from-red-500 group-hover:to-red-400 text-white text-xs font-bold px-6 py-3 rounded-xl uppercase tracking-wider shadow-lg transition-all">
+                <span>Jogar Agora</span>
+                <span class="group-hover:translate-x-1 transition-transform">➔</span>
+            </span>
+        </a>
+
+        <!-- Cartão 7: Em Breve (Exemplo: Jogo do Galo / Tic Tac Toe) -->
         <div class="neon-card-purple bg-gray-900/40 border-2 border-purple-500/20 rounded-2xl p-6 flex flex-col items-center text-center opacity-60 backdrop-blur-sm relative overflow-hidden">
             <div class="absolute top-3 right-3 bg-purple-500/20 border border-purple-500/40 text-purple-300 text-[10px] font-arcade px-2 py-0.5 rounded-full uppercase">
                 Brevemente

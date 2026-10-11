@@ -312,7 +312,42 @@
             </span>
         </a>
 
-        <!-- Cartão 7: Em Breve (Exemplo: Jogo do Galo / Tic Tac Toe) -->
+        <!-- Cartão 7: Arkanoid -->
+        <a href="https://figueira61.github.io/arkanoid/"
+           class="neon-card-purple bg-gray-900/90 border-2 border-purple-500/50 hover:border-purple-400 rounded-2xl p-6 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col items-center text-center group backdrop-blur-sm">
+            <div class="mb-4 group-hover:scale-110 transition-transform duration-300 filter drop-shadow-[0_0_10px_rgba(168,85,247,0.6)]">
+                <!-- Blocos, bola e nave (desenho próprio) -->
+                <svg viewBox="0 0 84 60" width="84" height="60" class="mx-auto block" role="img" aria-label="Blocos, bola e nave do Arkanoid">
+                    <g stroke-width="1.5" stroke-linejoin="round">
+                        <g fill="#ef4444" fill-opacity="0.35" stroke="#ef4444">
+                            <rect x="6" y="4" width="16" height="8" rx="1"/><rect x="24" y="4" width="16" height="8" rx="1"/><rect x="42" y="4" width="16" height="8" rx="1"/><rect x="60" y="4" width="16" height="8" rx="1"/>
+                        </g>
+                        <g fill="#facc15" fill-opacity="0.35" stroke="#facc15">
+                            <rect x="6" y="14" width="16" height="8" rx="1"/><rect x="24" y="14" width="16" height="8" rx="1"/><rect x="42" y="14" width="16" height="8" rx="1"/><rect x="60" y="14" width="16" height="8" rx="1"/>
+                        </g>
+                        <g fill="#22d3ee" fill-opacity="0.35" stroke="#22d3ee">
+                            <rect x="6" y="24" width="16" height="8" rx="1"/><rect x="24" y="24" width="16" height="8" rx="1"/><rect x="60" y="24" width="16" height="8" rx="1"/>
+                        </g>
+                    </g>
+                    <circle cx="50" cy="38" r="3.2" fill="#ffffff"/>
+                    <rect x="26" y="49" width="32" height="7" rx="3.5" fill="#22d3ee" fill-opacity="0.35" stroke="#22d3ee" stroke-width="1.5"/>
+                    <rect x="26" y="49" width="6" height="7" rx="3" fill="#ec4899"/>
+                    <rect x="52" y="49" width="6" height="7" rx="3" fill="#ec4899"/>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-purple-400 mb-2 tracking-wide group-hover:text-purple-300">
+                Arkanoid
+            </h2>
+            <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                Parta todos os blocos, apanhe cápsulas de laser e portais e suba no Hall of Fame!
+            </p>
+            <span class="mt-auto inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-purple-500 group-hover:from-purple-500 group-hover:to-purple-400 text-white text-xs font-bold px-6 py-3 rounded-xl uppercase tracking-wider shadow-lg transition-all">
+                <span>Jogar Agora</span>
+                <span class="group-hover:translate-x-1 transition-transform">➔</span>
+            </span>
+        </a>
+
+        <!-- Cartão 8: Em Breve (Exemplo: Jogo do Galo / Tic Tac Toe) -->
         <div class="neon-card-purple bg-gray-900/40 border-2 border-purple-500/20 rounded-2xl p-6 flex flex-col items-center text-center opacity-60 backdrop-blur-sm relative overflow-hidden">
             <div class="absolute top-3 right-3 bg-purple-500/20 border border-purple-500/40 text-purple-300 text-[10px] font-arcade px-2 py-0.5 rounded-full uppercase">
                 Brevemente
@@ -481,12 +516,13 @@ var RETRO = (function () {
             var el = document.getElementById('rt-stats'); el.textContent = '';
             RETRO.minhasStats().then(function (r) {
                 if (!r || !r.ok) return;
-                var s = r.stats || {}, sn = s.snake, fo = s.forca, pm = s.pacman, di = s.dino, te = s.tetris, t = [];
+                var s = r.stats || {}, sn = s.snake, fo = s.forca, pm = s.pacman, di = s.dino, te = s.tetris, ar = s.arkanoid, t = [];
                 if (sn && sn.games) t.push('🐍 Recorde: ' + sn.best_score);
                 if (fo && fo.games) t.push('🔤 Forca: ' + fo.wins + 'V / ' + fo.losses + 'D');
                 if (pm && pm.games) t.push('🟡 Pac-Man: ' + pm.best_score);
                 if (di && di.games) t.push('🦖 Dino: ' + di.best_score);
                 if (te && te.games) t.push('🧱 Tetris: ' + te.best_score);
+                if (ar && ar.games) t.push('🏓 Arkanoid: ' + ar.best_score);
                 el.textContent = t.join('   ·   ');
             }).catch(function () {});
         }

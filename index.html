@@ -347,7 +347,29 @@
             </span>
         </a>
 
-        <!-- Cartão 8: Em Breve (Exemplo: Jogo do Galo / Tic Tac Toe) -->
+        <!-- Cartão 8: Space Invaders -->
+        <a href="https://figueira61.github.io/Templo-do-Retro/space-invaders/"
+           class="neon-card-cyan bg-gray-900/90 border-2 border-cyan-500/50 hover:border-cyan-500 rounded-2xl p-6 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col items-center text-center group backdrop-blur-sm">
+            <div class="mb-4 group-hover:scale-110 transition-transform duration-300 filter drop-shadow-[0_0_10px_rgba(34,211,238,0.6)]">
+                <!-- Invasor e nave em pixel art (desenho próprio) -->
+                <svg viewBox="0 0 84 60" width="84" height="60" class="mx-auto block" role="img" aria-label="Invasor alienígena e nave do Space Invaders">
+                    <g fill="#22d3ee"><rect x="24.5" y="0" width="5" height="5"/><rect x="54.5" y="0" width="5" height="5"/><rect x="29.5" y="5" width="5" height="5"/><rect x="49.5" y="5" width="5" height="5"/><rect x="24.5" y="10" width="35" height="5"/><rect x="19.5" y="15" width="10" height="5"/><rect x="34.5" y="15" width="15" height="5"/><rect x="54.5" y="15" width="10" height="5"/><rect x="14.5" y="20" width="55" height="5"/><rect x="14.5" y="25" width="5" height="5"/><rect x="24.5" y="25" width="35" height="5"/><rect x="64.5" y="25" width="5" height="5"/><rect x="14.5" y="30" width="5" height="5"/><rect x="24.5" y="30" width="5" height="5"/><rect x="54.5" y="30" width="5" height="5"/><rect x="64.5" y="30" width="5" height="5"/><rect x="29.5" y="35" width="10" height="5"/><rect x="44.5" y="35" width="10" height="5"/></g>
+                    <g fill="#facc15"><rect x="41" y="44" width="2" height="2"/><rect x="39" y="46" width="6" height="2"/><rect x="39" y="48" width="6" height="2"/><rect x="31" y="50" width="22" height="2"/><rect x="29" y="52" width="26" height="2"/><rect x="29" y="54" width="26" height="2"/><rect x="29" y="56" width="26" height="2"/><rect x="29" y="58" width="26" height="2"/></g>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-cyan-400 mb-2 tracking-wide group-hover:text-cyan-300">
+                Space Invaders
+            </h2>
+            <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                Defenda a Terra dos invasores, apanhe o UFO e suba no Hall of Fame!
+            </p>
+            <span class="mt-auto inline-flex items-center gap-2 bg-gradient-to-r from-cyan-600 to-cyan-500 group-hover:from-cyan-500 group-hover:to-cyan-400 text-white text-xs font-bold px-6 py-3 rounded-xl uppercase tracking-wider shadow-lg transition-all">
+                <span>Jogar Agora</span>
+                <span class="group-hover:translate-x-1 transition-transform">➔</span>
+            </span>
+        </a>
+
+        <!-- Cartão 9: Em Breve (Exemplo: Jogo do Galo / Tic Tac Toe) -->
         <div class="neon-card-purple bg-gray-900/40 border-2 border-purple-500/20 rounded-2xl p-6 flex flex-col items-center text-center opacity-60 backdrop-blur-sm relative overflow-hidden">
             <div class="absolute top-3 right-3 bg-purple-500/20 border border-purple-500/40 text-purple-300 text-[10px] font-arcade px-2 py-0.5 rounded-full uppercase">
                 Brevemente
@@ -516,13 +538,14 @@ var RETRO = (function () {
             var el = document.getElementById('rt-stats'); el.textContent = '';
             RETRO.minhasStats().then(function (r) {
                 if (!r || !r.ok) return;
-                var s = r.stats || {}, sn = s.snake, fo = s.forca, pm = s.pacman, di = s.dino, te = s.tetris, ar = s.arkanoid, t = [];
+                var s = r.stats || {}, sn = s.snake, fo = s.forca, pm = s.pacman, di = s.dino, te = s.tetris, ar = s.arkanoid, iv = s.invaders, t = [];
                 if (sn && sn.games) t.push('🐍 Recorde: ' + sn.best_score);
                 if (fo && fo.games) t.push('🔤 Forca: ' + fo.wins + 'V / ' + fo.losses + 'D');
                 if (pm && pm.games) t.push('🟡 Pac-Man: ' + pm.best_score);
                 if (di && di.games) t.push('🦖 Dino: ' + di.best_score);
                 if (te && te.games) t.push('🧱 Tetris: ' + te.best_score);
                 if (ar && ar.games) t.push('🏓 Arkanoid: ' + ar.best_score);
+                if (iv && iv.games) t.push('👾 Invaders: ' + iv.best_score);
                 el.textContent = t.join('   ·   ');
             }).catch(function () {});
         }
